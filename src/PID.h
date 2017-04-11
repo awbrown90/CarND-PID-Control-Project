@@ -10,6 +10,13 @@ public:
   double i_error;
   double d_error;
 
+  double total_error;
+  
+  /*
+  * Counter
+  */
+  int cycle_n;
+
   /*
   * Coefficients
   */ 
@@ -30,7 +37,7 @@ public:
   /*
   * Initialize PID.
   */
-  void Init(double Kp, double Ki, double Kd);
+  void Init(double setKp, double setKi, double setKd);
 
   /*
   * Update the PID error variables given cross track error.

@@ -4,6 +4,10 @@
 #include "PID.h"
 #include <math.h>
 
+#include "Twiddle.h"
+
+using namespace std;
+
 // for convenience
 using json = nlohmann::json;
 
@@ -33,12 +37,20 @@ int main()
   uWS::Hub h;
 
   PID pid;
-  // TODO: Initialize the pid variable.
 
-  h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+  PID speedPID;
+
+	
+  pid.Init(0.1,0.0,0.005);
+  speedPID.Init(0.1,0.002,0.0);
+
+  PrintResults();
+
+  h.onMessage([&pid,&speedPID](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
+
     if (length && length > 2 && data[0] == '4' && data[1] == '2')
     {
       auto s = hasData(std::string(data));
@@ -51,22 +63,51 @@ int main()
           double speed = std::stod(j[1]["speed"].get<std::string>());
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           double steer_value;
+      	  double speed_value;
+  	  double setSpeed = 10.0;
           /*
           * TODO: Calcuate steering value here, remember the steering value is
           * [-1, 1].
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
-          
-          // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
-          json msgJson;
-          msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = 0.3;
-          auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-          std::cout << msg << std::endl;
-          ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+
+          steer_value = pid.Kp*cte+pid.Ki*pid.i_error+pid.Kd*pid.d_error;
+          speed_value = speedPID.Kp*(setSpeed-speed)+speedPID.Ki*speedPID.i_error;
+	  pid.UpdateError(cte);  
+	  speedPID.UpdateError((setSpeed-speed));
+	
+          // DEBUG
+          std::cout << "Cycle: " << pid.cycle_n << " Error "<< pid.TotalError() << std::endl;
+
+	  
+	  if(pid.TotalError() > GetBestError() ||  pid.cycle_n > 1150 || ((speed < setSpeed*.8) && (pid.cycle_n > 50 ))  ) 
+	  {
+	     if((speed < setSpeed*.8)&&(pid.cycle_n > 50))
+	     {
+		cout << "Car got stuck!" << endl;
+		pid = UpdateTwiddle(pid, 1000000);
+	     }
+	     else
+	     {
+	     	pid = UpdateTwiddle(pid, pid.TotalError());
+	     }
+	     PrintResults();
+             std::string msg = "42[\"reset\",{}]";
+	     ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+          }
+	  else
+	  {
+             json msgJson;
+             msgJson["steering_angle"] = steer_value;
+             msgJson["throttle"] = speed_value;
+             auto msg = "42[\"steer\"," + msgJson.dump() + "]";
+             // std::cout << msg << std::endl;
+             ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+	  } 
+
+
         }
       } else {
         // Manual driving
@@ -74,6 +115,7 @@ int main()
         ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
       }
     }
+
   });
 
   // We don't need this since we're not using HTTP but if it's removed the program
@@ -112,3 +154,90 @@ int main()
   }
   h.run();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
