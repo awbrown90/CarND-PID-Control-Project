@@ -40,8 +40,9 @@ int main()
 
   PID speedPID;
 
-	
-  pid.Init(0.1,0.0,0.005);
+  //p = {-0.6445,0.00109419,-5.28231};
+
+  pid.Init(-0.19,0.0,-0.21);
   speedPID.Init(0.1,0.002,0.0);
 
   PrintResults();
@@ -64,7 +65,9 @@ int main()
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           double steer_value;
       	  double speed_value;
-  	  double setSpeed = 10.0;
+  	  double setSpeed = 20.0;
+
+  	  		
           /*
           * TODO: Calcuate steering value here, remember the steering value is
           * [-1, 1].
@@ -74,20 +77,20 @@ int main()
 
 
           steer_value = pid.Kp*cte+pid.Ki*pid.i_error+pid.Kd*pid.d_error;
-          speed_value = speedPID.Kp*(setSpeed-speed)+speedPID.Ki*speedPID.i_error;
-	  pid.UpdateError(cte);  
-	  speedPID.UpdateError((setSpeed-speed));
+          speed_value = speedPID.Kp*(setSpeed-speed)+speedPID.Ki*speedPID.i_error+speedPID.Kd*speedPID.d_error;
+	  	  pid.UpdateError(cte);  
+	  	  speedPID.UpdateError((setSpeed-speed));
 	
           // DEBUG
-          std::cout << "Cycle: " << pid.cycle_n << " Error "<< pid.TotalError() << std::endl;
+          //std::cout << "Cycle: " << pid.cycle_n << " Error "<< pid.TotalError() << std::endl;
 
 	  
-	  if(pid.TotalError() > GetBestError() ||  pid.cycle_n > 1150 || ((speed < setSpeed*.8) && (pid.cycle_n > 50 ))  ) 
+	  if(pid.TotalError() > GetBestError() ||  pid.cycle_n > 5500 || ((speed < setSpeed*.2) && (pid.cycle_n > 50 ))  ) 
 	  {
-	     if((speed < setSpeed*.8)&&(pid.cycle_n > 50))
+	     if((speed < setSpeed*.2)&&(pid.cycle_n > 50))
 	     {
 		cout << "Car got stuck!" << endl;
-		pid = UpdateTwiddle(pid, 1000000);
+		pid= UpdateTwiddle(pid, 1000000);
 	     }
 	     else
 	     {
