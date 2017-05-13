@@ -9,7 +9,8 @@ The parameters for the controller were adjusted by trial and error, although a t
 
 The P term greatly impacted the amount of sway that the car had, the larger the value the larger distance it would osscillate. A high P value was important for the car to do tight turns, but too large and it would sway when going stright. The D term was very important for dampening the sway factor, and was set just by experimentation. The I term although not having a large impact to the overall system was being used to help offset the steering biasis.
 
-Although the car could go up to 30 MPH would the parameters chosen, it was set back down to 20 MPH just to be safe.
+Although the car could go up to 30 MPH with the parameters chosen, it was set back down to 20 MPH just to be safe.
+
 ---
 
 ## Dependencies
