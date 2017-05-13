@@ -1,6 +1,15 @@
 # CarND-Controls-PID
 Self-Driving Car Engineer Nanodegree Program
 
+A link to the car making it around the track is posted below.
+https://youtu.be/fAI-mBvov18
+
+
+The parameters for the controller were adjusted by trial and error, although a twiddle implementation was built in as well it tended to be very slow to train. Also the twiddle cost function was only looking for the lowest error, which meant that it could favor a pid system that swayed alot in the center of the road over one that was much smoother but it verred off to the side of the road. The parameters also were greatly affected by the speed of the car, note the speed portion was also governed by a pid controller. The steer PID controller used the P,I,D parameters, -.1, -0.0005, -.5. The I term turned out to be pretty insignificant even though the simulated car had a baised steering angle. The baised steering angle meant that if the car drove with zero steer turning then it would veer off to the right. The speed PID had P,I,D parameters of 0.3, 0.002, 0.0, so it was just a PI controller.
+
+The P term greatly impacted the amount of sway that the car had, the larger the value the larger distance it would osscillate. A high P value was important for the car to do tight turns, but too large and it would sway when going stright. The D term was very important for dampening the sway factor, and was set just by experimentation. The I term although not having a large impact to the overall system was being used to help offset the steering biasis.
+
+Although the car could go up to 30 MPH would the parameters chosen, it was set back down to 20 MPH just to be safe.
 ---
 
 ## Dependencies
