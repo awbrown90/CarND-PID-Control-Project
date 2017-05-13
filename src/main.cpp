@@ -41,9 +41,10 @@ int main()
   PID speedPID;
 
   //p = {-0.6445,0.00109419,-5.28231};
+  // 30MPH -0.1, -0.00005, -0.5
 
-  pid.Init(-0.19,0.0,-0.21);
-  speedPID.Init(0.1,0.002,0.0);
+  pid.Init(-0.1,-0.0005,-0.5);
+  speedPID.Init(0.8,0.002,0.0);
 
   PrintResults();
 
@@ -65,7 +66,7 @@ int main()
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           double steer_value;
       	  double speed_value;
-  	  double setSpeed = 20.0;
+  	  double setSpeed = 30.0;
 
   	  		
           /*
@@ -85,7 +86,7 @@ int main()
           //std::cout << "Cycle: " << pid.cycle_n << " Error "<< pid.TotalError() << std::endl;
 
 	  
-	  if(pid.TotalError() > GetBestError() ||  pid.cycle_n > 5500 || ((speed < setSpeed*.2) && (pid.cycle_n > 50 ))  ) 
+	  if(pid.TotalError() > GetBestError() ||  pid.cycle_n > 4000 || ((speed < setSpeed*.2) && (pid.cycle_n > 50 ))  ) 
 	  {
 	     if((speed < setSpeed*.2)&&(pid.cycle_n > 50))
 	     {

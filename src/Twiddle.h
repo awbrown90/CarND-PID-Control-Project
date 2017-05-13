@@ -12,8 +12,8 @@
   */
   //std::vector<double> p = {-0.6445,0.00109419,-5.28231};
   //std::vector<double> dp = {0.55,0.45,0.55};
-  std::vector<double> p = {-0.19,0.0,-0.21};
-  std::vector<double> dp = {0.099,0.081,0.11};
+  std::vector<double> p = {-0.1,-0.00005,-0.5};
+  std::vector<double> dp = {0.01,0.0001,0.05};
   int twiddle_case = 0;
   int twiddle_index = 0;
   double best_err = 1000000;
